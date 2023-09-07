@@ -1,0 +1,5 @@
+# .venv directory
+.venv/*
+
+# db directory
+db/*

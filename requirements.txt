@@ -1,0 +1,5 @@
+# Python 3.7
+# Libraries
+flask
+pymongo
+warc3-wet
