@@ -1,2 +1,2 @@
 
-GSBAPIKEY = 'AIzaSyCikn3pqHu6O2bLLIsNo_CiCaYP4WlLtaM'
+GSBAPIKEY = '...'

@@ -3,3 +3,9 @@
 
 # db directory
 db/*
+
+# files directory
+files/*
+
+# API key
+GSBAPIKEY.txt

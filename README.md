@@ -9,7 +9,7 @@
     After:
     [X] Create a new api key
     [X] Create a script to make the request
-[ ] Store some of the URLs in the database
+[X] Store the entries in the database
     Before:
     [X] Create a non-relational database
     [X] Integrate it with python
@@ -17,9 +17,13 @@
     [X] Understand what are all the parameters I want to fill for each of them (Can be changed in the future)
     {
         url: "http://aeon-cardkkm.tokyo/jp/login.html",
+        online: true,
+        phishtank_inspection: {
+            triggered: true,
+        }
         gsb_inspection: {
             triggered: true,
-            response: {}
+            comments: {}
         }
         manual_inspection: {
             triggered: true,
@@ -28,16 +32,26 @@
     }
     [X] Choose which URLs we will store (maybe 3000 of them)
     Random selection -- For now
-    [ ] Store some of the URLs in a text file
-    [ ] Store 500 urls from PhishTank in a text file 
-[ ] Store the results from GSB in the database for each url stored
-[ ] Make the endpoints to interact with the data
+
+    -> First option: Make separate scripts for each of the following tasks
+    [ ] Decide which urls from commoncrawl are going in
+    [ ] Decide which urls from phishtank are going in
+    [ ] Add them directly to the database
+    -> Alternative: Should I centralize all those functionalities on the server?
+    [X] Structuring a regular rest api with flask
+    [X] What should the endpoints be
+        /urls/
+        /gsb/validate
+    [X] Create multiple endpoints
+
+[X] Store the results from GSB in the database for each url stored
+[X] Make the endpoints to interact with the data
 [ ] Create the website to interact with the endpoints
     After:
     [ ] Try to create a view button for the URL
 
 # In progress
-[ ] Adding 500 phishtank urls to test my success rate
+[X] Adding 500 phishtank urls to test my success rate
 
 # 4 the Future
 [ ] Figure out how to get more URLs from the CommonCrawl website

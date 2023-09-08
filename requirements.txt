@@ -1,5 +1,7 @@
 # Python 3.7
 # Libraries
 flask
+flask-mongoengine
 pymongo
 warc3-wet
+requests
