@@ -2,6 +2,7 @@
 # Libraries
 flask
 flask-mongoengine
+flask-cors
 pymongo
 warc3-wet
 requests
