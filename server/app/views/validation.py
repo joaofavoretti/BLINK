@@ -29,7 +29,22 @@ def get_document(id):
         return jsonify(document)
     else:
         return jsonify({'error': 'Document not found'})
-    
+
+@validation_bp.route('/get_next_document/<string:id>', methods=['GET'])
+def get_next_document(id):
+    """
+    Get the next document ID.
+    """
+    document = Urls.objects.get(id=id)
+    if document:
+        next_document = Urls.objects.filter(id__gt=id).first()
+        if next_document:
+            return jsonify({'id': str(next_document.id)})
+        else:
+            return jsonify({'error': 'No next document'})
+    else:
+        return jsonify({'error': 'Document not found'})
+
 @validation_bp.route('/update_document/<string:id>', methods=['PUT'])
 def update_document(id):
     """
