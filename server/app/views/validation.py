@@ -29,3 +29,17 @@ def get_document(id):
         return jsonify(document)
     else:
         return jsonify({'error': 'Document not found'})
+    
+@validation_bp.route('/update_document/<string:id>', methods=['PUT'])
+def update_document(id):
+    """
+    Update a document by ID.
+    """
+    document = Urls.objects.get(id=id)
+    if document:
+        document.online = request.json['online']
+        document.manual_inspection = request.json['manual_inspection']
+        document.save()
+        return jsonify({'message': 'Document updated successfully'})
+    else:
+        return jsonify({'error': 'Document not found'})
