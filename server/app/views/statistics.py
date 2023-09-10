@@ -44,3 +44,15 @@ def confidence():
         'notFound': len(documents_not_found),
         'total': len(documents_found) + len(documents_not_found)
     })
+
+@statistics_bp.route('/save', methods=['POST'])
+def save():
+    documents = Urls.objects.filter(Q(manual_inspection__triggered=False) & Q(phishtank_inspection=None) & Q(online=True))
+    with open('verified.txt', 'w') as f:
+        for document in documents:
+            f.write(document.url + '\n')
+
+    return jsonify({
+        'saved': len(documents)
+    })
+        
