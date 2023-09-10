@@ -1,4 +1,4 @@
-# /app/views/urls.py
+# /app/views/validation.py
 
 from flask import Blueprint, jsonify, request
 from app.models import Urls

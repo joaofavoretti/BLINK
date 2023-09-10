@@ -6,3 +6,4 @@ flask-cors
 pymongo
 warc3-wet
 requests
+mongoengine
