@@ -55,4 +55,3 @@ def save():
     return jsonify({
         'saved': len(documents)
     })
-        

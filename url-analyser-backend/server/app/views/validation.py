@@ -2,19 +2,23 @@
 
 from flask import Blueprint, jsonify, request
 from app.models import Urls
+from mongoengine import Q
 
 validation_bp = Blueprint('validation', __name__, url_prefix='/validation')
 
 @validation_bp.route('/get_list', methods=['GET'])
 def get_all():
     documents = Urls.objects.all()
+    # documents = Urls.objects.filter(Q(manual_inspection__triggered=True) & Q(phishtank_inspection=None) & Q(online=True))
     urls = []
     for document in documents:
+        validated = True if document.manual_inspection else False
+        # validated = document.manual_inspection and document.manual_inspection.get('comments')
         url = {
             'id': str(document.id),
             'url': document.url,
             'online': document.online,
-            'validated': True if document.manual_inspection else False
+            'validated': validated
         }
         urls.append(url)
     return jsonify(urls)
@@ -38,6 +42,7 @@ def get_next_document(id):
     document = Urls.objects.get(id=id)
     if document:
         next_document = Urls.objects.filter(id__gt=id).first()
+        # next_document = Urls.objects.filter(Q(id__gt=id) & Q(online=True) & Q(manual_inspection__triggered=True) & Q(phishtank_inspection=None)).first()
         if next_document:
             return jsonify({'id': str(next_document.id)})
         else:

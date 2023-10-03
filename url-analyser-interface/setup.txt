@@ -1,0 +1,4 @@
+$ npx nuxi init vuetify-test
+
+$ npm install vuetify sass
+https://codybontecou.com/how-to-use-vuetify-with-nuxt-3.html

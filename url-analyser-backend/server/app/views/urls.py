@@ -2,6 +2,7 @@
 
 from flask import Blueprint, jsonify, request
 from app.models import Urls
+from mongoengine import Q
 
 urls_bp = Blueprint('urls', __name__, url_prefix='/urls')
 
@@ -60,3 +61,14 @@ def delete():
     url = Urls.objects.get(id=data['id'])
     url.delete()
     return jsonify(data)
+
+@urls_bp.route('/save_triggered', methods=['POST'])
+def get_triggered():
+    documents = Urls.objects.filter(Q(manual_inspection__triggered=True) & Q(phishtank_inspection=None))
+    with open('commoncrawl_suspicious.txt', 'w') as f:
+        for document in documents:
+            f.write(document.url + '\n')
+
+    return jsonify({
+        'saved': len(documents)
+    })
