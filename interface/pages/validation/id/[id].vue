@@ -244,17 +244,15 @@ const router = useRouter()
 
 const { data: resDocument } = await ValidationService.getDocument(route.params.id)
 let url = ref(resDocument)
-window.open(url.value.url, '_blank')
 
 const { data: resNextDocument } = await ValidationService.getNextDocument(route.params.id)
 const next_id = ref(resNextDocument.id)
 
-let assistance = ref(false)
+let assistance = ref(true)
 
 let loading = ref(false)
 
 const save = async () => {
-  // Change the ref object to a normal object
   try {
     loading.value = true
     const data = JSON.parse(JSON.stringify(url.value))

@@ -6,13 +6,19 @@
           <template v-slot:prepend>
             <v-icon>mdi-home</v-icon>
           </template>
-          Index
+          Home
         </v-list-item>
         <v-list-item to="/validation">
           <template v-slot:prepend>
             <v-icon>mdi-check-circle</v-icon>
           </template>
-          Validation
+          Manual Validation
+        </v-list-item>
+        <v-list-item to="/share">
+          <template v-slot:prepend>
+            <v-icon>mdi-share-variant</v-icon>
+          </template>
+          Share
         </v-list-item>
         <v-list-item to="/statistics">
           <template v-slot:prepend>
@@ -25,7 +31,6 @@
 
     <v-app-bar>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-app-bar-title>URL Validation App</v-app-bar-title>
     </v-app-bar>
 
     <v-main>
