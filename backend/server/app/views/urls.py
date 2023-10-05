@@ -1,53 +1,128 @@
 from flask import Blueprint, jsonify, request
 from datetime import datetime
 from app.models import Urls
+from app.models import UrlsUsedSources
 from mongoengine import Q
+import requests
+import sys
+import warc
+import os
 import json
 
 urls_bp = Blueprint('urls', __name__, url_prefix='/urls')
 
-# Temporary route to save data from /home/joao/my/projects/url-analyser/backup/phishing.urls.json
-@urls_bp.route('/import_data', methods=['POST'])
-def import_data():
-    fpath = '/home/joao/my/projects/url-analyser/backup/phishing.urls.json'
-    
-    with open(fpath, 'r') as f:
-        data = json.load(f)
-    
-    insertion_counter = 0
+@urls_bp.route('/', methods=['GET'])
+def get_urls():
+    urls = Urls.objects().limit(200)
 
-    for url in data:
-        insertion_counter += 1
+    formated_urls = [
+        {
+            "id": str(url.id),
+            "url": url.url,
+            "added_dt": str(url.added_dt),
+            "classification": url.classification,
+            "network_status": url.network_status,
+            "last_update_dt": str(url.last_update_dt),
+            "content_category": url.content_category if url.content_category else None,
+        } for url in urls
+    ]
 
-        url_classification = None
+    return jsonify(formated_urls), 200
+
+
+@urls_bp.route('/available_commoncrawl_files', methods=['GET'])
+def get_available_commoncrawl_files():
+    AVAILABLE_PATHS = 'files/warc.paths'
+
+    # Filter by attribute "source" == 'COMMONCRAWL
+    used_sources = UrlsUsedSources.objects.filter(Q(source='COMMONCRAWL'))
+    used_sources = set([os.path.basename(source.file) for source in used_sources])
+
+    amount = request.args.get('amount')
+    if amount is None:
+        amount = 10
+    else:
+        amount = int(amount)
+
+    with open(AVAILABLE_PATHS, 'r') as f:
+        paths = f.readlines()
+
+    fnames = [os.path.basename(path.strip()[:-3]) for path in paths if os.path.basename(path.strip()[:-3]) not in used_sources][-amount:]
+
+    return jsonify({'available_fnames': fnames}), 200
+
+@urls_bp.route('/add_commoncrawl_urls', methods=['POST'])
+def add_commoncrawl_urls():
+    AVAILABLE_PATHS = 'files/warc.paths'
+    BASE_DOWNLOAD_URL = 'https://data.commoncrawl.org'
+    FILES_DIR = './files'
+    
+    files = request.json['files']
+    
+    used_sources = UrlsUsedSources.objects.filter(Q(source='COMMONCRAWL'))
+    used_sources = set([os.path.basename(source.file) for source in used_sources])
+
+    # Verify if it was not already added
+    files = [file for file in files if os.path.basename(file) not in used_sources]
+
+    with open(AVAILABLE_PATHS, 'r') as f:
+        paths = f.readlines()
+
+    fpaths = [path.strip() for path in paths if os.path.basename(path.strip()[:-3]) in files]
+
+    fname_count = 0
+
+    for fpath in fpaths:
+        used_url_obj = UrlsUsedSources(source='COMMONCRAWL', file=os.path.basename(fpath[:-3]))
+        used_url_obj.save()
+
+        url = f'{BASE_DOWNLOAD_URL}/{fpath}'
+        fname = os.path.basename(fpath[:-3])
+        print(f'Processing {fname}')
+        print(f'Downloading {url}')
+        r = requests.get(url, stream=True)
+        if r.status_code == 200:
+            print(f'Saving content at {FILES_DIR}/{fname}.gz')
+            with open(f'{FILES_DIR}/{fname}.gz', 'wb') as f:
+                for chunk in r.iter_content(chunk_size=1024):
+                    f.write(chunk)
+        else:
+            print(f'Error downloading {fname}')
+            continue
+
+        # gzip decompress the file .gz
+        print(f'Decompressing {FILES_DIR}/{fname}.gz')
+        os.system(f'gzip -d {FILES_DIR}/{fname}.gz')
+
+        with warc.open(f'{FILES_DIR}/{fname}') as f:
+            for record in f:
+                print(f'Current count: {fname_count}', end='                                   \r')
+
+                if 'WARC-Target-URI' not in record:
+                    continue
+
+                # Search if the URL already exists
+                url_document = Urls.objects(url=record['WARC-Target-URI']).first()
+
+                if url_document:
+                    continue
+
+                fname_count += 1
+
+                url_dict = {
+                    "url": record['WARC-Target-URI'],
+                    "network_status": 'ONLINE',
+                    "classification": 'BENIGN',
+                    "added_dt": datetime.now(),
+                    "last_update_dt": datetime.now(),
+                    "content_category": None,
+                    "source": "COMMONCRAWL"
+                }
+
+                url = Urls(**url_dict)
+                url.save()
         
-        url_added_dt = datetime.now()
+        # Remove the file
+        os.system(f'rm {FILES_DIR}/{fname}')
 
-        url_last_update_dt = datetime.now()
-
-        url_content_category = None
-
-        url_source = None
-
-        args = {
-            'url': url['url'],
-            'network_status': 'ONLINE' if url['online'] else 'OFFLINE',
-            'classification': url_classification,
-            'added_dt': url_added_dt,
-            'last_update_dt': url_last_update_dt,
-            'content_category': url_content_category,
-            'source': url_source
-        }
-
-        url = Urls(**args)
-        url.save()
-
-    return jsonify({
-        'insertion_counter': insertion_counter
-    })
-
-@urls_bp.route('/get-category', methods=['GET']):
-def get_category():
-    # Filter
-    urls = Urls.objects()
-    return jsonify(urls)
+    return jsonify({'message': 'URLs added successfully', 'included_file_count': fname_count}), 200

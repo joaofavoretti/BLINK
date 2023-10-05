@@ -8,7 +8,7 @@
           </template>
           Home
         </v-list-item>
-        <v-list-item to="/validation">
+        <v-list-item to="/database">
           <template v-slot:prepend>
             <v-icon>mdi-database</v-icon>
           </template>

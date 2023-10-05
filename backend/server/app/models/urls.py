@@ -5,7 +5,7 @@ class Urls(db.Document):
     url = db.StringField(required=True, unique=True)
 
     # Network Status Field: Boolean Field to contain true if the URL is online, false if it is offline or null if it has not been checked
-    network_status = db.BooleanField(choices=['ONLINE', 'OFFLINE', None], default=None)
+    network_status = db.StringField(choices=['ONLINE', 'OFFLINE', None], default=None)
 
     # Classification: String Field to contain the classification of the URL. It can only be fields that are on the "urls_classifications" collection
     classification = db.StringField(default=None)
