@@ -16,13 +16,4 @@ def create_app():
     from .views import urls_bp
     app.register_blueprint(urls_bp)
 
-    from .views import gsb_bp
-    app.register_blueprint(gsb_bp)
-
-    from .views import validation_bp
-    app.register_blueprint(validation_bp)
-
-    from .views import statistics_bp
-    app.register_blueprint(statistics_bp)
-
     return app

@@ -10,17 +10,17 @@
         </v-list-item>
         <v-list-item to="/validation">
           <template v-slot:prepend>
-            <v-icon>mdi-check-circle</v-icon>
+            <v-icon>mdi-database</v-icon>
           </template>
-          Manual Validation
+          Database
         </v-list-item>
-        <v-list-item to="/share">
+        <v-list-item>
           <template v-slot:prepend>
-            <v-icon>mdi-share-variant</v-icon>
+            <v-icon>mdi-cog</v-icon>
           </template>
-          Share
+          Processing
         </v-list-item>
-        <v-list-item to="/statistics">
+        <v-list-item>
           <template v-slot:prepend>
             <v-icon>mdi-chart-bar</v-icon>
           </template>

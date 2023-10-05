@@ -1,74 +1,53 @@
-# /app/views/urls.py
-
 from flask import Blueprint, jsonify, request
+from datetime import datetime
 from app.models import Urls
 from mongoengine import Q
+import json
 
 urls_bp = Blueprint('urls', __name__, url_prefix='/urls')
 
-@urls_bp.route('/save', methods=['POST'])
-def save():
-    data = request.get_json()
-    url = Urls(**data)
-    url.save()
-    return jsonify(data)
+# Temporary route to save data from /home/joao/my/projects/url-analyser/backup/phishing.urls.json
+@urls_bp.route('/import_data', methods=['POST'])
+def import_data():
+    fpath = '/home/joao/my/projects/url-analyser/backup/phishing.urls.json'
+    
+    with open(fpath, 'r') as f:
+        data = json.load(f)
+    
+    insertion_counter = 0
 
-@urls_bp.route('/save_from_url', methods=['POST'])
-def save_from_url():
-    req_json = request.get_json()
-    url = req_json['url']
-    data = Urls(**{
-        'url': url,
-        'online': True,
-        'phishtank_inspection': None,
-        'gsb_inspection': None,
-        'manual_inspection': None
-    })
-    data.save()
-    return jsonify(data)
+    for url in data:
+        insertion_counter += 1
 
-@urls_bp.route('/save_from_phishtank', methods=['POST'])
-def save_from_phishtank():
-    req_json = request.get_json()
-    url = req_json['url']
-    data = Urls(**{
-        'url': url,
-        'online': True,
-        'phishtank_inspection': {
-            'triggered': True,
-        },
-        'gsb_inspection': None,
-        'manual_inspection': None
-    })
-    data.save()
-    return jsonify(data)
+        url_classification = None
+        
+        url_added_dt = datetime.now()
 
-@urls_bp.route('/get', methods=['GET'])
-def get():
-    urls = Urls.objects()
-    return jsonify(urls)
+        url_last_update_dt = datetime.now()
 
-@urls_bp.route('/update', methods=['POST'])
-def update():
-    data = request.get_json()
-    url = Urls.objects.get(id=data['id'])
-    url.update(**data)
-    return jsonify(data)
+        url_content_category = None
 
-@urls_bp.route('/delete', methods=['POST'])
-def delete():
-    data = request.get_json()
-    url = Urls.objects.get(id=data['id'])
-    url.delete()
-    return jsonify(data)
+        url_source = None
 
-@urls_bp.route('/save_triggered', methods=['POST'])
-def get_triggered():
-    documents = Urls.objects.filter(Q(manual_inspection__triggered=True) & Q(phishtank_inspection=None))
-    with open('commoncrawl_suspicious.txt', 'w') as f:
-        for document in documents:
-            f.write(document.url + '\n')
+        args = {
+            'url': url['url'],
+            'network_status': 'ONLINE' if url['online'] else 'OFFLINE',
+            'classification': url_classification,
+            'added_dt': url_added_dt,
+            'last_update_dt': url_last_update_dt,
+            'content_category': url_content_category,
+            'source': url_source
+        }
+
+        url = Urls(**args)
+        url.save()
 
     return jsonify({
-        'saved': len(documents)
+        'insertion_counter': insertion_counter
     })
+
+@urls_bp.route('/get-category', methods=['GET']):
+def get_category():
+    # Filter
+    urls = Urls.objects()
+    return jsonify(urls)
