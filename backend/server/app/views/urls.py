@@ -4,10 +4,8 @@ from app.models import Urls
 from app.models import UrlsUsedSources
 from mongoengine import Q
 import requests
-import sys
 import warc
 import os
-import json
 
 urls_bp = Blueprint('urls', __name__, url_prefix='/urls')
 
@@ -29,7 +27,8 @@ def get_urls():
 
     return jsonify(formated_urls), 200
 
-
+# Change the endpoint names and maybe use a separate controller 
+#   and api to make those manipulations on commoncrawl files and urls
 @urls_bp.route('/available_commoncrawl_files', methods=['GET'])
 def get_available_commoncrawl_files():
     AVAILABLE_PATHS = 'files/warc.paths'
@@ -102,6 +101,7 @@ def add_commoncrawl_urls():
                     continue
 
                 # Search if the URL already exists
+                # TODO: For optimizations, maybe make that search on the RAM instead of the database
                 url_document = Urls.objects(url=record['WARC-Target-URI']).first()
 
                 if url_document:

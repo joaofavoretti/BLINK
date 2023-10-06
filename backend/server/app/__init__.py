@@ -16,4 +16,7 @@ def create_app():
     from .views import urls_bp
     app.register_blueprint(urls_bp)
 
+    from .views import processing_bp
+    app.register_blueprint(processing_bp)
+
     return app

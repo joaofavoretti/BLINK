@@ -3,3 +3,4 @@
 # from server.app.views.bkp.statistics import statistics_bp
 
 from app.views.urls import urls_bp
+from app.views.processing import processing_bp

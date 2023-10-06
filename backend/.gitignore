@@ -4,6 +4,9 @@
 # db directory
 db/*
 
+# Chrome Extension
+nnpljppamoaalgkieeciijbcccohlpoh/*
+
 # files directory
 files/CC-MAIN-*
 
