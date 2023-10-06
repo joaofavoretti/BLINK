@@ -45,9 +45,9 @@ sudo apt-get install -y mongodb-org
 
 **Change files with machine IPS**
 
-- server/run.py:9
-- server/config.py:5
-- nnpljppamoaalgkieeciijbcccohlpoh/Path.js:85
+- `server/run.py`:9
+- `server/config.py`:5
+- `nnpljppamoaalgkieeciijbcccohlpoh/js/Path.js`:85
 
 ## Running
 
