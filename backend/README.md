@@ -47,7 +47,7 @@ sudo apt-get install -y mongodb-org
 **Running the Database**
 
 ```
-mongod --dbpath=db
+mongod --dbpath=db --bind_ip 192.168.0.15
 ```
 
 **Running the Backend**
