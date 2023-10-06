@@ -4,3 +4,4 @@
 
 from app.views.urls import urls_bp
 from app.views.processing import processing_bp
+from app.views.commoncrawl import commoncrawl_bp

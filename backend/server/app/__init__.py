@@ -19,4 +19,7 @@ def create_app():
     from .views import processing_bp
     app.register_blueprint(processing_bp)
 
+    from .views import commoncrawl_bp
+    app.register_blueprint(commoncrawl_bp)
+
     return app
