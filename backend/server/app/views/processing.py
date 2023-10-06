@@ -177,8 +177,13 @@ def check_database_redirections():
     checked_urls = set([url.url for url in Redirections.objects.all()])
     urls = [url.url for url in Urls.objects(source='COMMONCRAWL', network_status='ONLINE') if url.url not in checked_urls]
 
-    num_proc = multiprocessing.cpu_count()
-    pool = multiprocessing.Pool(num_proc)
-    pool.map(crawl_searching_redirections, urls)
+    # Multiprocessing Version
+    # num_proc = multiprocessing.cpu_count()
+    # pool = multiprocessing.Pool(num_proc)
+    # pool.map(crawl_searching_redirections, urls)
+
+    # Sequential Version
+    for url in urls:
+        crawl_searching_redirections(url)
 
     return jsonify({'message': 'Redirections Checked', 'urls_count': len(urls)}), 200
