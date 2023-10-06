@@ -76,6 +76,7 @@ def crawl_searching_redirections(url):
     except:
         print('Error handling alerts')
         pass
+
     driver.quit()
 
     return True
@@ -123,6 +124,7 @@ def callback_check_url_redirections():
     hops = request.json['hops']
 
     main_url = hops[0]['url']
+    print(f'Processing Redirections for {main_url}')
 
     try:
         url_obj = Urls.objects.get(url=main_url)
@@ -146,7 +148,8 @@ def callback_check_url_redirections():
             'last_update_dt': datetime.now(),
             'hops_amount': len(hops)
         })
-        redirections_obj.save()
+    
+    redirections_obj.save()
     
     return jsonify({'message': f'Updated Redirections for {main_url}'}), 200
 
@@ -178,12 +181,12 @@ def check_database_redirections():
     urls = [url.url for url in Urls.objects(source='COMMONCRAWL', network_status='ONLINE') if url.url not in checked_urls]
 
     # Multiprocessing Version
-    # num_proc = multiprocessing.cpu_count()
-    # pool = multiprocessing.Pool(num_proc)
-    # pool.map(crawl_searching_redirections, urls)
+    num_proc = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(num_proc)
+    pool.map(crawl_searching_redirections, urls)
 
     # Sequential Version
-    for url in urls:
-        crawl_searching_redirections(url)
+    # for url in urls:
+    #     crawl_searching_redirections(url)
 
     return jsonify({'message': 'Redirections Checked', 'urls_count': len(urls)}), 200
