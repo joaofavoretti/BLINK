@@ -3,7 +3,7 @@
 
 ## Database
 
-To download de database use the following [link](https://drive.google.com/file/d/1MyArrc-CEz4tQINGNl25R2WFs-hUA7y1/view?usp=sharing)
+To download de database use the following [link](https://drive.google.com/file/d/1d5IVKl9UkmqORDULL0ag1fLQ9jcVqPfy/view?usp=sharing)
 
 Place the `db` directory on the root of the `backend` folder
 
@@ -40,4 +40,19 @@ curl -fsSL https://pgp.mongodb.com/server-7.0.asc | \
 echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 sudo apt update
 sudo apt-get install -y mongodb-org
+```
+
+## Running
+
+**Running the Database**
+
+```
+mongod --dbpath=db
+```
+
+**Running the Backend**
+
+```
+source .venv/bin/activate
+python server/run.py
 ```
