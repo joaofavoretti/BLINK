@@ -174,15 +174,11 @@ def check_url_redirections():
 
 @processing_bp.route('/check_database_redirections', methods=['POST'])
 def check_database_redirections():
-    urls = Urls.objects(source='COMMONCRAWL', network_status='ONLINE')
+    checked_urls = set([url.url for url in Redirections.objects.all()])
+    urls = [url.url for url in Urls.objects(source='COMMONCRAWL', network_status='ONLINE') if url.url not in checked_urls]
 
-    updated_urls_count = 0
+    num_proc = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(num_proc)
+    pool.map(crawl_searching_redirections, urls)
 
-    for url in urls:
-        updated_urls_count += 1
-        try:
-            crawl_searching_redirections(url.url)
-        except:
-            continue
-
-    return jsonify({'message': 'Redirections Checked', 'updated_urls_count': updated_urls_count}), 200
+    return jsonify({'message': 'Redirections Checked', 'urls_count': len(urls)}), 200
