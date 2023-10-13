@@ -1,7 +1,11 @@
-# URL Validator Infrastructure
+# BLINK: Browser Link Inspector for Network Knowledge
 
-This projects aims to create a interface to sistematically/manually validate URLs.
+Interface to sistematically/manually inspect URLs and domains. It contains built-in features aimed to understand the Phishing problem.
 
-![URL Analyser Logo](interface/assets/URL-Analyser-Logo1.png)
+![Logo](assets/logo-1.png)
 
-It was first created to attend personal tasks related to a Phishing research.
+# Other Name Suggestions
+- BLINK: 
+- SPROUT: Suspicious Phishing Resource Observer and URL Tracker
+- SWAT: Suspicious Web Address Tracker
+
