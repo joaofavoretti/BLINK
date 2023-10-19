@@ -1,17 +1,31 @@
 # Backend
 
+To download the files in a easy way use the `gdown` software:
+
+```
+pip install gdown
+```
 
 ## Database
 
-To download de database use the following [link](https://drive.google.com/file/d/1d5IVKl9UkmqORDULL0ag1fLQ9jcVqPfy/view?usp=sharing)
+To download de database use the following [link](https://drive.google.com/file/d/13hBPFuYwzP5Pia5_QDkhcTyUSHWt2RP_/view?usp=sharing)
 
 Place the `db` directory on the root of the `backend` folder
+
+```
+gdown https://drive.google.com/uc\?id\=13hBPFuYwzP5Pia5_QDkhcTyUSHWt2RP_
+```
 
 ## Chrome Extension
 
 To download de chrome extension use the following [link](https://drive.google.com/file/d/1nbJz6FGyvrp7RABEEt70anILTZdCHrzH/view?usp=sharing)
 
 Place the `nnpljppamoaalgkieeciijbcccohlpoh` directory on the root of the `backend` folder
+
+
+```
+gdown https://drive.google.com/uc\?id\=1nbJz6FGyvrp7RABEEt70anILTZdCHrzH
+```
 
 ## Setup
 
