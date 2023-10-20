@@ -4,6 +4,7 @@ from app.models import Urls
 from app.models import Redirections
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from mongoengine import Q
 import time
 import multiprocessing
@@ -32,17 +33,20 @@ def crawl_searching_redirections(url):
 
     # Configuring Selenium Driver
     chrome_options = Options()
+    chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--load-extension={}'.format(EXTENSION_PATH))
     chrome_options.add_argument('--ignore-ssl-errors=yes')
     chrome_options.add_argument('--ignore-certificate-errors')
     
+    service = Service('/usr/bin/chromedriver')
+
     # User Agent Settings
     # chrome_options.add_argument('user-agent=Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/W.X.Y.Z Safari/537.36')
     # chrome_options.add_argument("--user-data-dir=/home/joao/.config/google-chrome")
     # chrome_options.add_argument("--profile-directory=Profile 1")
     
     try:
-        driver = Chrome(options=chrome_options)
+        driver = Chrome(service=service, options=chrome_options)
         driver.set_page_load_timeout(40)
     except:
         print('Could not open Chrome Driver')
@@ -181,12 +185,12 @@ def check_database_redirections():
     urls = [url.url for url in Urls.objects(source='COMMONCRAWL', network_status='ONLINE') if url.url not in checked_urls]
 
     # Multiprocessing Version
-    num_proc = multiprocessing.cpu_count()
-    pool = multiprocessing.Pool(num_proc)
-    pool.map(crawl_searching_redirections, urls)
+    # num_proc = multiprocessing.cpu_count()
+    # pool = multiprocessing.Pool(num_proc)
+    # pool.map(crawl_searching_redirections, urls)
 
     # Sequential Version
-    # for url in urls:
-    #     crawl_searching_redirections(url)
+    for url in urls:
+        crawl_searching_redirections(url)
 
     return jsonify({'message': 'Redirections Checked', 'urls_count': len(urls)}), 200

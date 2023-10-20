@@ -29,6 +29,12 @@ gdown https://drive.google.com/uc\?id\=1nbJz6FGyvrp7RABEEt70anILTZdCHrzH
 
 ## Setup
 
+**Requied Packets**
+```
+sudo apt install git wget
+```
+
+
 **Install Python 3.7**
 
 ```
@@ -43,6 +49,15 @@ sudo apt-get install python3.7 python3.7-venv
 python3.7 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+**Install Chrome Driver on Server**
+
+https://skolo.online/documents/webscrapping/#step-1-download-chrome (+ Change the sample code to use the Service class)
+
+```
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install ./google-chrome-stable_current_amd64.deb
 ```
 
 **Download Mongodb**
