@@ -26,6 +26,11 @@ def check_network_status(url):
     return network_status
 
 def crawl_searching_redirections(url):
+    # If url not in the redirections collection
+    if Redirections.objects(url=url).count() != 0:
+        print(f'URL {url} already scaned')
+        return False
+
     print(f'Crawling URL: {url}')
     
     # Constant variables
@@ -181,8 +186,7 @@ def check_url_redirections():
 
 @processing_bp.route('/check_database_redirections', methods=['POST'])
 def check_database_redirections():
-    checked_urls = set([url.url for url in Redirections.objects.all()])
-    urls = [url.url for url in Urls.objects(source='COMMONCRAWL', network_status='ONLINE') if url.url not in checked_urls]
+    urls = [url.url for url in Urls.objects(source='COMMONCRAWL', network_status='ONLINE')]
 
     # Multiprocessing Version
     # num_proc = multiprocessing.cpu_count()
