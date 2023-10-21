@@ -31,7 +31,7 @@ gdown https://drive.google.com/uc\?id\=1nbJz6FGyvrp7RABEEt70anILTZdCHrzH
 
 **Requied Packets**
 ```
-sudo apt install git wget
+sudo apt install git wget unzip software-properties-common
 ```
 
 

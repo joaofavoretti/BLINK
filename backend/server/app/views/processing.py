@@ -31,6 +31,32 @@ def crawl_searching_redirections(url):
         print(f'URL {url} already scaned')
         return False
 
+    # Registering it in the database to avoid multiple scans
+    try:
+        url_obj = Urls.objects.get(url=url)
+        url_obj.last_update_dt = datetime.now()
+    except Urls.DoesNotExist:
+        url_obj = Urls(**{
+            'url': url,
+            'added_dt': datetime.now(),
+            'last_update_dt': datetime.now(),
+            'source': "MANUAL"
+        })
+    url_obj.save()
+
+    try:
+        redirections_obj = Redirections.objects.get(url=url)
+        redirections_obj.last_update_dt = datetime.now()
+        redirections_obj.hops_amount = 0
+    except Redirections.DoesNotExist:
+        redirections_obj = Redirections(**{
+            'url': url,
+            'last_update_dt': datetime.now(),
+            'hops_amount': 0
+        })
+    redirections_obj.save()
+
+    # Start the trigger to crawl the URL
     print(f'Crawling URL: {url}')
     
     # Constant variables
@@ -145,7 +171,7 @@ def callback_check_url_redirections():
             'last_update_dt': datetime.now(),
             'source': "MANUAL"
         })
-        url_obj.save()
+    url_obj.save()
 
     try:
         redirections_obj = Redirections.objects.get(url=main_url)
